@@ -12,29 +12,24 @@ const refs = {
   btnMore: document.querySelector('.load-more'),
 };
 
-refs.form.addEventListener('submit', e => {
+refs.form.addEventListener('submit', async e => {
   e.preventDefault();
 
   refs.gallary.innerHTML = '';
   refs.btnMore.classList.add('none');
   page = 1;
 
-  fetchApiImages();
-  async function fetchApiImages() {
-    await api();
-  }
+  await fetchApiImages();
 });
 
-refs.btnMore.addEventListener('click', () => {
+refs.btnMore.addEventListener('click', async () => {
   page += 1;
-  getMoreImages();
-  async function getMoreImages() {
-    await api();
-  }
+
+  await fetchApiImages();
 });
 
-function api() {
-  axios
+async function fetchApiImages() {
+  await axios
     .get(
       `https://pixabay.com/api/?key=${API_KEY}&q=${refs.inputSearch.value}&per_page=40&page=${page}&image_type=photo&orientation=horizontal&safesearch=true`
     )
