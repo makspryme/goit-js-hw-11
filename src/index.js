@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox/dist/simple-lightbox.esm';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import renderMarkupImages from './js/api.js';
 
 const API_KEY = '36746776-e64b35908dc0b8143507a4db3';
@@ -34,12 +36,17 @@ async function fetchApiImages() {
       `https://pixabay.com/api/?key=${API_KEY}&q=${refs.inputSearch.value}&per_page=40&page=${page}&image_type=photo&orientation=horizontal&safesearch=true`
     )
     .then(response => {
+      console.log(response.data);
       refs.gallary.insertAdjacentHTML(
         'beforeend',
         renderMarkupImages(response.data)
       );
 
       refs.btnMore.classList.remove('none');
+      new SimpleLightbox('.gallery a', {
+        captionsData: 'alt',
+        captionDelay: 250,
+      });
 
       if (response.data.totalHits === 0) {
         refs.btnMore.classList.add('none');
