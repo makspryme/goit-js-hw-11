@@ -2,7 +2,7 @@ export default function renderMarkupImages(data) {
   const card = data.hits
     .map(el => {
       return `<div class="photo-card">
-        <img width="350" height="200" src="${el.largeImageURL}" alt="" loading="lazy" />
+        <img width="350" height="200" src="${el.largeImageURL}" alt="${el.tags}" loading="lazy" />
         <div class="info">
           <p class="info-item">
             <b>Likes</b>

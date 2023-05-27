@@ -9,11 +9,11 @@ let page = 1;
 refs.form.addEventListener('submit', e => {
   refs.gallary.innerHTML = '';
   refs.btnMore.classList.add('none');
+  page = 1;
 
   e.preventDefault();
 
   fetchApiImages();
-  page = 1;
   async function fetchApiImages() {
     await api();
   }
@@ -30,13 +30,25 @@ refs.btnMore.addEventListener('click', () => {
 function api() {
   axios
     .get(
-      `https://pixabay.com/api/?key=${API_KEY}&q=${refs.inputSearch.value}&per_page=40&page=${page}`
+      `https://pixabay.com/api/?key=${API_KEY}&q=${refs.inputSearch.value}&per_page=40&page=${page}&image_type=photo&orientation=horizontal&safesearch=true`
     )
     .then(response => {
       refs.gallary.insertAdjacentHTML(
         'beforeend',
         renderMarkupImages(response.data)
       );
+
+      refs.btnMore.classList.remove('none');
+
+      if (response.data.totalHits === 0) {
+        refs.btnMore.classList.add('none');
+
+        Notify.warning(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+
+        return;
+      }
 
       if (response.data.hits.length < 40) {
         refs.btnMore.classList.add('none');
@@ -46,7 +58,6 @@ function api() {
 
         return;
       }
-      refs.btnMore.classList.remove('none');
     })
     .catch(error => Notify.failure('Failure! not found api'));
 }
