@@ -5,7 +5,7 @@ import renderMarkupImages from './js/api.js';
 const API_KEY = '36746776-e64b35908dc0b8143507a4db3';
 let page = 1;
 
-refs = {
+const refs = {
   gallary: document.querySelector('.gallery'),
   inputSearch: document.querySelector('input[name="searchQuery"]'),
   form: document.querySelector('#search-form'),
