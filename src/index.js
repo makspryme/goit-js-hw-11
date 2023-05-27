@@ -7,11 +7,11 @@ const API_KEY = '36746776-e64b35908dc0b8143507a4db3';
 let page = 1;
 
 refs.form.addEventListener('submit', e => {
+  e.preventDefault();
+
   refs.gallary.innerHTML = '';
   refs.btnMore.classList.add('none');
   page = 1;
-
-  e.preventDefault();
 
   fetchApiImages();
   async function fetchApiImages() {
