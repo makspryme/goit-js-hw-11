@@ -1,71 +1,18 @@
-import axios from 'axios';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import SimpleLightbox from 'simplelightbox/dist/simple-lightbox.esm';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import renderMarkupImages from './js/api.js';
-
-const API_KEY = '36746776-e64b35908dc0b8143507a4db3';
-let page = 1;
-
-const refs = {
-  gallary: document.querySelector('.gallery'),
-  inputSearch: document.querySelector('input[name="searchQuery"]'),
-  form: document.querySelector('#search-form'),
-  btnMore: document.querySelector('.load-more'),
-};
+import fetchApiImages from './js/api.js';
+import { refs, apiOptions } from './js/api.js';
 
 refs.form.addEventListener('submit', async e => {
   e.preventDefault();
 
   refs.gallary.innerHTML = '';
   refs.btnMore.classList.add('none');
-  page = 1;
+  apiOptions.page = 1;
 
-  await fetchApiImages();
+  await fetchApiImages(apiOptions.API_KEY, apiOptions.page);
 });
 
 refs.btnMore.addEventListener('click', async () => {
-  page += 1;
+  apiOptions.page += 1;
 
-  await fetchApiImages();
+  await fetchApiImages(apiOptions.API_KEY, apiOptions.page);
 });
-
-async function fetchApiImages() {
-  await axios
-    .get(
-      `https://pixabay.com/api/?key=${API_KEY}&q=${refs.inputSearch.value}&per_page=40&page=${page}&image_type=photo&orientation=horizontal&safesearch=true`
-    )
-    .then(response => {
-      console.log(response.data);
-      refs.gallary.insertAdjacentHTML(
-        'beforeend',
-        renderMarkupImages(response.data)
-      );
-
-      refs.btnMore.classList.remove('none');
-      new SimpleLightbox('.gallery a', {
-        captionsData: 'alt',
-        captionDelay: 250,
-      });
-
-      if (response.data.totalHits === 0) {
-        refs.btnMore.classList.add('none');
-
-        Notify.warning(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-
-        return;
-      }
-
-      if (response.data.hits.length < 40) {
-        refs.btnMore.classList.add('none');
-        Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-
-        return;
-      }
-    })
-    .catch(error => Notify.failure('Failure! not found api'));
-}
